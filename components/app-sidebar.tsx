@@ -15,18 +15,26 @@ import { UserButton ,useUser } from "@clerk/nextjs"
 import { ChannelList } from "stream-chat-react"
 import { ChannelFilters ,ChannelSort } from "stream-chat"
 import {NewChatDialog} from "@/components/NewChatDialog"
+import { useRouter } from 'next/navigation';
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser();
+  const router = useRouter();
   const filters:ChannelFilters={
     members: { $in: [user?.id as string] },
     type:{$in:["messaging","team"]},
   }
+  const openChats = () => {
+    router.push(`/chats`);
+  };
+
   const options = { pressence:true ,state:true};
   const sort: ChannelSort ={
     last_message_at:-1,
   };
   return (
+    
     <Sidebar variant="floating" {...props}>
       <SidebarHeader>
         <SidebarMenu>
@@ -57,7 +65,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                Start New Chat
               </Button>
               </NewChatDialog>
-
+                <Button 
+                  className="w-full" 
+                  variant="outline" 
+                  onClick={openChats}   // <-- attach here
+                >
+                  Chats
+                </Button>
             {/* Channels List */}
             <ChannelList  
             sort={sort} 
